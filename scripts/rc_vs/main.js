@@ -65,7 +65,7 @@ mc.world.beforeEvents.playerInteractWithBlock.subscribe(data => {
     faces = data.blockFace
     let directionvalue = getCardinalDir(data.player)
     blockId.check = data.itemStack.typeId.startsWith("vs:") && data.itemStack.typeId.endsWith("_vertical_slab");
-    blockId.value = data.itemStack.typeId
+    blockId.value = data.block.typeId
     //--
     
     
@@ -145,9 +145,14 @@ mc.system.beforeEvents.startup.subscribe(event =>{
 
 
                  if (blockId.check && blockId.value == clickedblock) {
+
+                    
+
                      block.setPermutation(
                        block.permutation.withState("vs:is_double", true)
                     )
+                } else {
+                    return
                 }
 
             })
