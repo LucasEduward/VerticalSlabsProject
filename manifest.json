@@ -1,0 +1,58 @@
+{
+  "format_version": 2,
+  "metadata": {
+    "authors": [
+      "Purplebyte"
+    ],
+    "product_type": "addon"
+  },
+  "header": {
+    "name": "Vertical Slabs",
+    "description": "pack.description",
+    "uuid": "bbd17294-9cd9-4c1e-93b8-8fa3a201f127",
+    "pack_scope": "world",
+    "version": [
+      1,
+      0,
+      0
+    ],
+    "min_engine_version": [
+      1,
+      21,
+      100
+    ]
+  },
+  "modules": [
+    {
+      "type": "data",
+      "uuid": "110d9339-d363-46ee-ad4b-2ab7459a8c32",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "type": "script",
+      "language": "javascript",
+      "uuid": "d33f5c66-eead-4e5d-b832-35c8401fa170",
+      "entry": "scripts/rc_vs/main.js",
+      "version": [1, 0, 0]
+    }
+  ],
+  "dependencies": [
+    {
+      "module_name": "@minecraft/server",
+      "version": "2.7.0"
+    },
+
+    {
+      "uuid": "07930dcf-24f3-4b18-93c1-a47bea4e5f5a",
+      "version": [
+        1,
+        0,
+        0
+      ]
+    }
+  ]
+}

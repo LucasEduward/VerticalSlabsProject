@@ -1,0 +1,109 @@
+{
+    "format_version": "1.26.20",
+    "minecraft:block": {
+        
+        "description": {
+            "identifier": "vs:oak_planks_vertical_slab",
+            "menu_category": {
+                "category": "construction"
+            },
+
+            "states": {
+              "vs:rotation_y": [0, 90, 180, 270]
+            },
+
+            "traits": {
+                "minecraft:placement_direction": {
+                    "enabled_states": [
+                        "minecraft:cardinal_direction"
+                    ]
+                }
+            }
+
+            
+            
+        },
+
+        "components": {
+            "minecraft:destructible_by_mining": {
+                "seconds_to_destroy": 3
+            },
+            "minecraft:destructible_by_explosion": {
+                "explosion_resistance": 3
+            },
+
+
+            "minecraft:geometry": "geometry.v_slab",
+            "minecraft:material_instances": {
+                "*": {
+                    "texture": "oak_planks_vertical_slab",
+                    "render_method": "alpha_test"
+                }
+
+                
+            },
+
+            "minecraft:collision_box": {
+                "origin": [-8, 0, -8],
+                "size": [16, 16, 8]
+                
+            },
+            "minecraft:selection_box": {
+                "origin": [-8, 0, -8],
+                "size": [16, 16, 8]
+            },
+
+            "vs:slab_placement": {},
+
+            "minecraft:liquid_detection": {
+                "detection_rules": [
+                {
+                 "can_contain_liquid": true,
+                "liquid_type": "water",
+                "on_liquid_touches": "no_reaction",
+                "use_liquid_clipping": true
+                }
+            ]
+            }
+
+            
+
+            
+
+            
+            
+
+            
+            
+        },
+
+
+        "permutations": [
+           
+            {
+                "condition": "q.block_state('vs:rotation_y') == 180",
+                "components": {"minecraft:transformation":{"rotation":[0, 180, 0]}}
+            },
+            {
+                "condition": "q.block_state('vs:rotation_y') == 0",
+                "components": {"minecraft:transformation":{"rotation":[0, 0, 0]}}
+            },
+            {
+                "condition": "q.block_state('vs:rotation_y') == 90",
+                "components": {"minecraft:transformation":{"rotation":[0, 90, 0]}}
+            },
+            {
+                "condition": "q.block_state('vs:rotation_y') == 270",
+                "components":{"minecraft:transformation":{"rotation":[0, 270, 0]}}
+            }
+
+           
+          
+
+            
+            
+            
+        ]
+       
+    }
+}
