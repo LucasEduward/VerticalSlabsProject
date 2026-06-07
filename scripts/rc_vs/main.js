@@ -5,7 +5,7 @@ console.warn("vertical_slab.js carregado!");
 
 let slab_region = null
 let faces = null
-
+let blockId = null
 //--
 
 // Functions
@@ -61,6 +61,7 @@ mc.world.beforeEvents.playerInteractWithBlock.subscribe(data => {
     let coords = data.faceLocation
     faces = data.blockFace
     let directionvalue = getCardinalDir(data.player)
+    blockId = data.itemStack.typeId
     //--
     
     
@@ -78,7 +79,7 @@ mc.world.beforeEvents.playerInteractWithBlock.subscribe(data => {
     
 
     // Gets ID to execute the function on any type of vertical slab
-    if (data.itemStack.typeId.startsWith("vs:") && data.itemStack.typeId.endsWith("_vertical_slab")) {
+    if (blockId.startsWith("vs:") && blockId.endsWith("_vertical_slab")) {
         
         // Variables
         let fixedCoords = fixInvertedValue(coords, faces, data.block.location,directionvalue)
@@ -89,19 +90,14 @@ mc.world.beforeEvents.playerInteractWithBlock.subscribe(data => {
         
         //--
 
-
-        // Vertical Faces
-
-
-
         if (faces == "Up" || faces == "Down"){
             const direction = getCardinalDir(data.player)
             
 
             if (direction == "north" ) {
-                slab_region = fixedCoords.z > 0.5 ? "back": "front";
-            } else if (direction == "south") {
                 slab_region = fixedCoords.z > 0.5 ? "front": "back";
+            } else if (direction == "south") {
+                slab_region = fixedCoords.z > 0.5 ? "back": "front";
             } else if (direction == "west") {
                 slab_region = fixedCoords.x > 0.5 ? "back": "front";
             }else {
@@ -124,8 +120,8 @@ mc.system.beforeEvents.startup.subscribe(event =>{
     event.blockComponentRegistry.registerCustomComponent("vs:slab_placement", {
         beforeOnPlayerPlace(event) {
             
-           event.permutationToPlace = event.permutationToPlace.withState("vs:half", slab_region)
-           
+           event.permutationToPlace = event.permutationToPlace.withState("vs:half",slab_region)
+           console.warn(slab_region)
 
           
 
@@ -137,12 +133,13 @@ mc.system.beforeEvents.startup.subscribe(event =>{
 
             mc.system.run(() => {
 
-                neighbor.setPermutation(
-                    neighbor.permutation.withState("vs:is_double", true)
-                )
+                if (blockId.startsWith("vs:") && blockId.endsWith("_vertical_slab")) {
+                    block.setPermutation(
+                        block.permutation.withState("vs:is_double", true)
+                    )
+ 
+                }
 
-                block.setPermutation(mc.BlockPermutation.resolve("minecraft:air"))
-                console.warn("+a")
             })
 
         }

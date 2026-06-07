@@ -57,6 +57,10 @@
                 }
             },
         
+            "minecraft:redstone_conductivity": {
+                "allows_wire_to_step_down": false,
+                "redstone_conductor": false
+            },
 
             "minecraft:geometry": {
               "identifier":  "geometry.v_slab",
@@ -77,11 +81,11 @@
             },
 
             "minecraft:collision_box": {
-                "origin": [-8, 0, -8],
+                "origin": [-8, 0, 0],
                 "size": [16, 16, 8]
             },
             "minecraft:selection_box": {
-                "origin": [-8, 0, -8],
+                "origin": [-8, 0, 0],
                 "size": [16, 16, 8]
             },
 
@@ -133,7 +137,19 @@
                         16,
                         16
                     ]
+                },
+                "minecraft:redstone_conductivity": {
+                    "redstone_conductor": true,
+                    "allows_wire_to_step_down": true
+                },
+                "minecraft:geometry": {
+                    "identifier": "geometry.v_slab",
+                    "bone_visibility": {
+                        "front": "true",
+                        "back": "true"
+                    }
                 }
+                
             }
           },
 
@@ -153,9 +169,13 @@
                     "origin": [
                         -8,
                         0,
-                        0
+                        -8
                     ],
                     "size": [16, 16, 8]
+                },
+                "minecraft:redstone_conductivity": {
+                    "allows_wire_to_step_down": false,
+                    "redstone_conductor": false
                 }
             }
           }
