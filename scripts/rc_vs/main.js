@@ -61,7 +61,7 @@ mc.world.beforeEvents.playerInteractWithBlock.subscribe(data => {
     let coords = data.faceLocation
     faces = data.blockFace
     let directionvalue = getCardinalDir(data.player)
-    blockId = data.itemStack.typeId
+    blockId = data.itemStack.typeId.startsWith("vs:") && data.itemstack.typeId.endsWith("_vertical_slab");
     //--
     
     
@@ -79,7 +79,7 @@ mc.world.beforeEvents.playerInteractWithBlock.subscribe(data => {
     
 
     // Gets ID to execute the function on any type of vertical slab
-    if (blockId.startsWith("vs:") && blockId.endsWith("_vertical_slab")) {
+    if (blockId) {
         
         // Variables
         let fixedCoords = fixInvertedValue(coords, faces, data.block.location,directionvalue)
@@ -130,10 +130,12 @@ mc.system.beforeEvents.startup.subscribe(event =>{
 
         onPlace(event) {
             const block = event.block
+            const clickedblock = event.block.typeId
+           
 
             mc.system.run(() => {
 
-                if (blockId.startsWith("vs:") && blockId.endsWith("_vertical_slab")) {
+                if (blockId && blockId == clickedblock) {
                     block.setPermutation(
                         block.permutation.withState("vs:is_double", true)
                     )
