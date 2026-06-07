@@ -5,7 +5,10 @@ console.warn("vertical_slab.js carregado!");
 
 let slab_region = null
 let faces = null
-let blockId = null
+let blockId = {
+    check: null,
+    value: null
+}
 //--
 
 // Functions
@@ -54,14 +57,15 @@ function getCardinalDir(target) {
 //--
 
 
-//Player interecting 
+//Player interacting 
 mc.world.beforeEvents.playerInteractWithBlock.subscribe(data => {
     
     // Variables
     let coords = data.faceLocation
     faces = data.blockFace
     let directionvalue = getCardinalDir(data.player)
-    blockId = data.itemStack.typeId.startsWith("vs:") && data.itemstack.typeId.endsWith("_vertical_slab");
+    blockId.check = data.itemStack.typeId.startsWith("vs:") && data.itemStack.typeId.endsWith("_vertical_slab");
+    blockId.value = data.itemStack.typeId
     //--
     
     
@@ -79,7 +83,7 @@ mc.world.beforeEvents.playerInteractWithBlock.subscribe(data => {
     
 
     // Gets ID to execute the function on any type of vertical slab
-    if (blockId) {
+    if (blockId.check) {
         
         // Variables
         let fixedCoords = fixInvertedValue(coords, faces, data.block.location,directionvalue)
@@ -120,9 +124,12 @@ mc.system.beforeEvents.startup.subscribe(event =>{
     event.blockComponentRegistry.registerCustomComponent("vs:slab_placement", {
         beforeOnPlayerPlace(event) {
             
-           event.permutationToPlace = event.permutationToPlace.withState("vs:half",slab_region)
-           console.warn(slab_region)
-
+            if(slab_region != null) {
+                event.permutationToPlace = event.permutationToPlace.withState("vs:half",slab_region)
+                console.warn(slab_region)
+            } else {
+                slab_region = null
+            }
           
 
             
@@ -134,12 +141,13 @@ mc.system.beforeEvents.startup.subscribe(event =>{
            
 
             mc.system.run(() => {
+              
 
-                if (blockId && blockId == clickedblock) {
-                    block.setPermutation(
-                        block.permutation.withState("vs:is_double", true)
+
+                 if (blockId.check && blockId.value == clickedblock) {
+                     block.setPermutation(
+                       block.permutation.withState("vs:is_double", true)
                     )
- 
                 }
 
             })
