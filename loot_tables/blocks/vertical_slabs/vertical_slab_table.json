@@ -7,7 +7,7 @@
                 {
                     "type": "item",
                     "name": "vs:cherry_planks_vertical_slab",
-            "       functions": [
+                    "functions": [
                         {
                             "function": "set_count",
                             "count": 1

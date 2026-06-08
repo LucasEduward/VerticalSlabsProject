@@ -9,7 +9,10 @@
             },
 
             "states": {
-              "vs:rotation_y": [0, 90, 180, 270]
+
+              "vs:is_double": [false, true],
+              "vs:half": ["front", "back"]
+              
             },
 
             "traits": {
@@ -26,30 +29,63 @@
 
         "components": {
             "minecraft:destructible_by_mining": {
-                "seconds_to_destroy": 3
+                "seconds_to_destroy": 0.5,
+                "item_specific_speeds": [
+                    {
+                        "item": "minecraft:diamond_axe",
+                        "destroy_speed": 0.2
+                    }
+                ]
             },
             "minecraft:destructible_by_explosion": {
                 "explosion_resistance": 3
             },
 
+            "minecraft:item_visual":{
+                "geometry":{
+                    "identifier": "geometry.v_slab",
+                    "bone_visibility": {
+                        "front": "false"
+                        
+                    }
+                },
+                "material_instances": {
+                    "*": {
+                    "texture": "oak_planks_vertical_slab",
+                    "render_method": "alpha_test"
+                    }
+                }
+            },
+        
+            "minecraft:redstone_conductivity": {
+                "allows_wire_to_step_down": false,
+                "redstone_conductor": false
+            },
 
-            "minecraft:geometry": "geometry.v_slab",
+            "minecraft:geometry": {
+              "identifier":  "geometry.v_slab",
+              "bone_visibility": {
+                "front": "q.block_state('vs:half') == 'front' || q.block_state('vs:is_double')",
+                "back": "q.block_state('vs:half') == 'back' || q.block_state('vs:is_double')"
+              }
+            },
+
             "minecraft:material_instances": {
                 "*": {
                     "texture": "oak_planks_vertical_slab",
                     "render_method": "alpha_test"
                 }
+                
 
                 
             },
 
             "minecraft:collision_box": {
-                "origin": [-8, 0, -8],
+                "origin": [-8, 0, 0],
                 "size": [16, 16, 8]
-                
             },
             "minecraft:selection_box": {
-                "origin": [-8, 0, -8],
+                "origin": [-8, 0, 0],
                 "size": [16, 16, 8]
             },
 
@@ -57,45 +93,95 @@
 
             "minecraft:liquid_detection": {
                 "detection_rules": [
-                {
-                 "can_contain_liquid": true,
-                "liquid_type": "water",
-                "on_liquid_touches": "no_reaction",
-                "use_liquid_clipping": true
-                }
-            ]
-            }
+                    {
+                        "can_contain_liquid": true,
+                        "liquid_type": "water",
+                        "on_liquid_touches": "blocking",
+                        "use_liquid_clipping": true
+                    }
+                ]
+            },
 
-            
+            "minecraft:loot": "loot_tables/blocks/vertical_slabs/vertical_slab_table.json"
 
-            
-
-            
-            
-
-            
-            
         },
 
 
         "permutations": [
            
-            {
-                "condition": "q.block_state('vs:rotation_y') == 180",
-                "components": {"minecraft:transformation":{"rotation":[0, 180, 0]}}
-            },
-            {
-                "condition": "q.block_state('vs:rotation_y') == 0",
-                "components": {"minecraft:transformation":{"rotation":[0, 0, 0]}}
-            },
-            {
-                "condition": "q.block_state('vs:rotation_y') == 90",
-                "components": {"minecraft:transformation":{"rotation":[0, 90, 0]}}
-            },
-            {
-                "condition": "q.block_state('vs:rotation_y') == 270",
-                "components":{"minecraft:transformation":{"rotation":[0, 270, 0]}}
+          {
+            "condition": "q.block_state('vs:is_double')",
+            "components": {
+                "minecraft:liquid_detection": {
+                    "detection_rules": [
+                        {
+                            "can_contain_liquid": false,
+                            "liquid_type": "water",
+                            "on_liquid_touches": "blocking"
+                        }
+                    ]
+                },
+                "minecraft:loot": "loot_tables/blocks/vertical_slabs/vs_double_slab_table.json",
+                "minecraft:collision_box": {
+                    "origin": [-8, 0, -8],
+                    "size": [16, 16, 16]
+                },
+                "minecraft:selection_box": {
+                    "origin": [
+                        -8,
+                        0,
+                        -8
+                    ],
+                    "size": [
+                        16,
+                        16,
+                        16
+                    ]
+                },
+                "minecraft:redstone_conductivity": {
+                    "redstone_conductor": true,
+                    "allows_wire_to_step_down": true
+                },
+                "minecraft:geometry": {
+                    "identifier": "geometry.v_slab",
+                    "bone_visibility": {
+                        "front": "true",
+                        "back": "true"
+                    }
+                }
+                
             }
+          },
+
+
+          {
+            "condition": "q.block_state('vs:half') == 'back'",
+            "components": {
+                "minecraft:collision_box": {
+                    "origin": [
+                        -8,
+                        0,
+                        -8
+                    ],
+                    "size": [16, 16, 8]
+                },
+                "minecraft:selection_box": {
+                    "origin": [
+                        -8,
+                        0,
+                        -8
+                    ],
+                    "size": [16, 16, 8]
+                },
+                "minecraft:redstone_conductivity": {
+                    "allows_wire_to_step_down": false,
+                    "redstone_conductor": false
+                }
+            }
+          }
+
+
+           
 
            
           

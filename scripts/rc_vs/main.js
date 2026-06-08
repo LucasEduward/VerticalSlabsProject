@@ -7,7 +7,8 @@ let slab_region = null
 let faces = null
 let blockId = {
     check: null,
-    value: null
+    value: null,
+    holding: null
 }
 //--
 
@@ -66,6 +67,7 @@ mc.world.beforeEvents.playerInteractWithBlock.subscribe(data => {
     let directionvalue = getCardinalDir(data.player)
     blockId.check = data.itemStack.typeId.startsWith("vs:") && data.itemStack.typeId.endsWith("_vertical_slab");
     blockId.value = data.block.typeId
+    blockId.holding = data.itemStack.typeId
     //--
     
     
@@ -89,11 +91,7 @@ mc.world.beforeEvents.playerInteractWithBlock.subscribe(data => {
         let fixedCoords = fixInvertedValue(coords, faces, data.block.location,directionvalue)
         //--
 
-
-        // Debug
-        
-        //--
-
+        // Get fixed face coords an return string to assing block_state "vs:half" value
         if (faces == "Up" || faces == "Down"){
             const direction = getCardinalDir(data.player)
             
@@ -107,10 +105,74 @@ mc.world.beforeEvents.playerInteractWithBlock.subscribe(data => {
             }else {
                 slab_region = fixedCoords.x > 0.5? "front": "back";
             }
+
+            
+            
+            //--
         } else {
             slab_region = null
         }
         //--
+        
+        //Do doble slab if the slab is interacted with another slab
+        if (blockId.check && blockId.value == blockId.holding) {
+            let currenthalf = data.block.permutation.getState("vs:half")
+            let expectedface = null
+            let directionset = null
+            const direction = getCardinalDir(data.player)
+            let oppositeDir = null
+            let setter = null
+            let faceslower = faces.toLowerCase()
+
+            if (direction == "north"){
+                if (currenthalf == "front") {
+                    expectedface = "south"
+                    directionset = faceslower
+                } else if (currenthalf == "back") {
+                    directionset = faceslower
+                    expectedface = "north"
+                } else {return}
+            } else if (direction == "south") {
+                     if (currenthalf == "front") {
+                        expectedface = "north"
+                        directionset = faceslower
+                    } else if (currenthalf == "back") {
+                        expectedface = "south"
+                        directionset = faceslower
+                    } else {return}
+            } else if (direction == "west") {
+                  if (currenthalf == "front") {
+                    expectedface = "east"
+                    directionset = faceslower
+                } else if (currenthalf == "back") {
+                    expectedface = "west"
+                    directionset = faceslower
+                } else {return}
+            } else {
+                  if (currenthalf == "front") {
+                    expectedface = "west"
+                    directionset = faceslower
+                } else if (currenthalf == "back") {
+                    expectedface = "east"
+                    directionset = faceslower
+                } else {return}
+            }
+
+            mc.system.run(() => {
+                if (directionset == expectedface) {
+                    setter = true
+                } else {
+                    setter = false
+                }
+                
+                data.block.setPermutation(data.block.permutation.withState("vs:is_double", setter))
+            })
+            
+        } else {
+            console.warn("not a vertical slab")
+        }
+
+
     }
     
     
@@ -133,32 +195,7 @@ mc.system.beforeEvents.startup.subscribe(event =>{
           
 
             
-        },
-
-        onPlace(event) {
-            const block = event.block
-            const clickedblock = event.block.typeId
-           
-
-            mc.system.run(() => {
-              
-
-
-                 if (blockId.check && blockId.value == clickedblock) {
-
-                    
-
-                     block.setPermutation(
-                       block.permutation.withState("vs:is_double", true)
-                    )
-                } else {
-                    return
-                }
-
-            })
-
         }
-
            
 
         
