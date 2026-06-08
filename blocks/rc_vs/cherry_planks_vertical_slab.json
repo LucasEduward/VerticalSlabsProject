@@ -10,8 +10,8 @@
 
             "states": {
 
-              "vs:is_double": [false, true],
-              "vs:half": ["front", "back"]
+              
+              "vs:half": ["front", "back", "double"]
               
             },
 
@@ -111,7 +111,7 @@
         "permutations": [
            
           {
-            "condition": "q.block_state('vs:is_double')",
+            "condition": "q.block_state('vs:half') == 'double'",
             "components": {
                 "minecraft:liquid_detection": {
                     "detection_rules": [
@@ -179,6 +179,25 @@
                     "redstone_conductor": false
                 }
             }
+          },
+
+
+
+          {
+            "condition": "q.block_state('minecraft:cardinal_direction') == 'north'",
+            "components": {"minecraft:transformation":{"rotation":[0, 0, 0]}}
+          },
+          {
+            "condition": "q.block_state('minecraft:cardinal_direction') == 'south'",
+            "components": {"minecraft:transformation":{"rotation":[0, 180, 0]}}
+          },
+          {
+            "condition": "q.block_state('minecraft:cardinal_direction') == 'west'",
+            "components": {"minecraft:transformation":{"rotation":[0, 90, 0]}}
+          },
+          {
+            "condition": "q.block_state('minecraft:cardinal_direction') == 'east'",
+            "components": {"minecraft:transformation":{"rotation":[0, 270, 0]}}
           }
 
 
