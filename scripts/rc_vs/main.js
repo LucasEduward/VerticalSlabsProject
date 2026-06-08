@@ -1,5 +1,5 @@
 import * as mc from "@minecraft/server";
-
+import { getOppositeFace, fixInvertedValue, getCardinalDir } from "./lucas_functions";
 console.warn("vertical_slab.js carregado!");
 // Global Variables
 
@@ -12,52 +12,6 @@ let blockId = {
 }
 //--
 
-// Functions
-function fixInvertedValue(facecoords, facedir, blockloc, cardDirection) {
-    //--
-    const xfaces = facedir == "North" || facedir == "South"
-    const zfaces = facedir == "West" || facedir == "East"
-    let xFixed = null
-    let zFixed = null
-    
-    if (xfaces) {
-        blockloc.x >= 0 ? xFixed = 1 - facecoords.x: xFixed = facecoords.x
-    } else if (zfaces) {
-        blockloc.z >= 0 ? zFixed = 1 - facecoords.z: zFixed = facecoords.z
-    }else {
-        
-        if (cardDirection == "east" || cardDirection == "west") {
-            if (blockloc.x >= 0) {xFixed = 1 - facecoords.x} else{
-                xFixed = facecoords.x
-            }
-        } else {
-            if (blockloc.z >= 0) {zFixed = 1 - facecoords.z} else {
-                zFixed = facecoords.z
-            }
-        }
-        
-    }
-    
-    return {x: xFixed, z: zFixed}
-}
-
-function getCardinalDir(target) {
-    
-    let yaw = target.getRotation().y;
-    
-    if ( yaw < -45 && yaw >= -135) return "east";
-    if (yaw > -45 && yaw < 45) return "south";
-    if (yaw < 135 && yaw >= 45) return "west";
-    return "north";
-    
-    
-    
-}
-
-
-//--
-
-
 //Player interacting 
 mc.world.beforeEvents.playerInteractWithBlock.subscribe(data => {
     
@@ -68,6 +22,7 @@ mc.world.beforeEvents.playerInteractWithBlock.subscribe(data => {
     blockId.check = data.itemStack.typeId.startsWith("vs:") && data.itemStack.typeId.endsWith("_vertical_slab");
     blockId.value = data.block.typeId
     blockId.holding = data.itemStack.typeId
+    let clickedblock = data.block
     //--
     
     
@@ -77,12 +32,10 @@ mc.world.beforeEvents.playerInteractWithBlock.subscribe(data => {
     
     //Debug
     console.warn(JSON.stringify(coords))
-    console.warn(JSON.stringify("§aBlock face: " + "§r" + faces))
-    console.warn(JSON.stringify("§acardinal angle value: " + "§6" + directionvalue))
+    //console.warn(JSON.stringify("§aBlock face: " + "§r" + faces))
+    //console.warn(JSON.stringify("§acardinal angle value: " + "§6" + directionvalue))
+    
     //--
-    
-    
-    
 
     // Gets ID to execute the function on any type of vertical slab
     if (blockId.check) {
@@ -110,25 +63,29 @@ mc.world.beforeEvents.playerInteractWithBlock.subscribe(data => {
             
             //--
         } else {
-            slab_region = null
+            slab_region = "back"
+
+            //Do doble slab if the slab is interacted with another slab
+            if (blockId.check && blockId.value == blockId.holding) {
+               const clickedFace = faces.toLowerCase()
+               const expectedFace = getOppositeFace(clickedblock, faces)
+               
+                mc.system.run(() => {
+                    if (expectedFace == clickedFace){
+    
+                        data.cancel = true
+                        data.block.setPermutation(data.block.permutation.withState("vs:half", "double"))
+                    
+                        console.warn("expected face: " +"§1" + expectedFace +"§r" + " clicked face: " + "§1" + clickedFace)
+    
+                    } else {return}
+                })
         }
         //--
         
-        //Do doble slab if the slab is interacted with another slab
-        if (blockId.check && blockId.value == blockId.holding) {
-        
-
-            mc.system.run(() => {
-                
-                
-                data.block.setPermutation(data.block.permutation.withState("vs:half", "double"))
-            })
             
-        } else {
-            console.warn("not a vertical slab")
-        }
-
-
+        } 
+      
     }
     
     
@@ -148,8 +105,8 @@ mc.system.beforeEvents.startup.subscribe(event =>{
             } else {
                 slab_region = null
             }
-          
-
+                console.warn(JSON.stringify(event.permutationToPlace.getState("minecraft:cardinal_direction")))
+            slab_region = null
             
         }
            

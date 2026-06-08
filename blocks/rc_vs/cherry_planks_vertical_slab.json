@@ -66,8 +66,8 @@
             "minecraft:geometry": {
               "identifier":  "geometry.v_slab",
               "bone_visibility": {
-                "front": "q.block_state('vs:half') == 'front' || q.block_state('vs:is_double')",
-                "back": "q.block_state('vs:half') == 'back' || q.block_state('vs:is_double')"
+                "front": "q.block_state('vs:half') == 'front' || q.block_state('vs:half') == 'double'",
+                "back": "q.block_state('vs:half') == 'back' || q.block_state('vs:half') == 'double'"
               }
             },
 
